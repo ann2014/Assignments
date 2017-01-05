@@ -6,10 +6,8 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
-
-# R Bridge Week 1 Assignment 
 
 ## 1.	Write a loop that calculates 12-factorial. 
 ```{r create a function, echo = TRUE}
