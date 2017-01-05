@@ -5,10 +5,6 @@ date: "January 5, 2017"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
 ## 1.	Write a loop that calculates 12-factorial. 
 ```{r create a function, echo = TRUE}
 inPvec<-1 #predefine vector to concatenate results into
