@@ -1,0 +1,55 @@
+---
+title: "R Bridge Week 1 Assignment"
+author: "Ann Liu-Ferrara"
+date: "January 5, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Bridge Week 1 Assignment 
+
+## 1.	Write a loop that calculates 12-factorial. 
+```{r create a function, echo = TRUE}
+inPvec<-1 #predefine vector to concatenate results into
+for (x in 1:12){ 
+  # browser()
+  if(x == 1) inPvec <- 1
+  else {
+    inPvec <- inPvec * x
+  }
+  cat(x, "!:", inPvec, "\n")
+}
+
+```
+
+Resource: http://stackoverflow.com/questions/18375370/return-value-from-function-when-iterating-in-a-loop-r
+
+## 2. Show how to create a numeric vector that contains the sequence from 20 to 50 by 5.
+
+```{r pressure, echo=TRUE}
+nVec <- seq(20, 50, by = 5)
+is.vector(nVec, mode = "numeric")
+```
+## 3. Create the function "factorial" that takes a trio of input numbers a, b, and c and solve the quadratic equation. The function should print as output the two solutions.
+
+```{R, echo = TRUE}
+QFun <- function(a, b, c) {
+  numSqrt <- b^2 - 4*a*c
+  if(numSqrt > 0) {
+    x1 <- (-b+sqrt(b^2 - 4*a*c))/(2*a)
+    x2 <- (-b-sqrt(b^2 - 4*a*c))/(2*a)
+    x <- c(x1, x2)
+    x
+  } else if (numSqrt == 0) {
+    x <- -b/(2*a)
+    x
+  } else {"No results when the number under square root less than 0."}
+}
+
+QFun(1, -2, 1)
+QFun(3, 8, 5)
+```
+
