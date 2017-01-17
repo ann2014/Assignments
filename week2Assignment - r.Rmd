@@ -1,0 +1,63 @@
+---
+title: "R Bridge Course Week 2 Assignment"
+author: "Ann Liu-Ferrara"
+date: "January 13, 2017"
+output: html_document
+
+---
+1. Use the summary function to gain an overview of the data set. Then display the mean and median for at least two attributes.
+
+```{r}
+library(RCurl)
+library(ggplot2)
+library(plyr)
+library(reshape2)
+library(extrafont)
+
+weightLoss.data <- getURL("https://raw.githubusercontent.com/ann2014/CUNY/master/WeightLoss.csv")
+weightLoss.data <- read.csv(text = weightLoss.data)
+head(weightLoss.data)
+summary(weightLoss.data)
+
+```
+
+2. Create a new data frame with a subset of the columns and rows. Make sure to rename it.
+
+```{r, echo=TRUE}
+str(weightLoss.data)
+new.df <- subset(weightLoss.data, select = -X)
+head(new.df)
+```
+
+3. Create new column names for the new data frame.
+
+```{r}
+names(new.df)[2:4] <- c("WeightLoss_month1", "WeightLoss_month2", "WeightLoss_month3")
+names(new.df)[5:7] <- c("SelfEsteem_month1", "SelfEsteem_month2", "SelfEsteem_month3")
+head(new.df)
+```
+
+4. Use the summary function to create an overview of your new data frame. The print the mean and median for the same two attributes. Please compare.
+
+```{r}
+summary(new.df)
+summary(weightLoss.data)
+```
+
+5. For at least 3 values in a column please rename so that every value in that column is renamed. For example, suppose I have 20 values of the letter "e" in one column. Rename those values so that all 20 would show as "excellent".
+
+```{r}
+head(new.df[, 1])
+new.df[, 1] <- gsub('Control', 'Ctrl', new.df[, 1])
+head(new.df[, 1])
+
+```
+
+6. Display enough rows to see examples of all of steps 1-5 above.
+
+```{r}
+head(new.df, 15)
+```
+7. BONUS - place the original .csv in a github file and have R read from the link. This will be a very useful skill as you progress in your data science education and career.
+
+https://raw.githubusercontent.com/ann2014/CUNY/master/WeightLoss.csv
