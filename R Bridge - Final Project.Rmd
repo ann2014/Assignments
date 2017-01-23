@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 1. Data Exploration: This should include summary statistics, means, medians, quartiles, or any other relevant information about the data set. Please include some conclusions in the R Markdown text.
-```{r}
+```{r echo = TRUE}
 library(RCurl)
 library(ggplot2)
 library(data.table)
