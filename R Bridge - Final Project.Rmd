@@ -8,6 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+Please find the final project in rPubs: http://rpubs.com/liuferrara/243906
+
 1. Data Exploration: This should include summary statistics, means, medians, quartiles, or any other relevant information about the data set. Please include some conclusions in the R Markdown text.
 ```{r echo = TRUE}
 library(RCurl)
