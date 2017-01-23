@@ -1,0 +1,95 @@
+---
+title: "R Bridge Course Final Project"
+author: "Ann Liu-Ferrara"
+date: "January 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+1. Data Exploration: This should include summary statistics, means, medians, quartiles, or any other relevant information about the data set. Please include some conclusions in the R Markdown text.
+```{r}
+library(RCurl)
+library(ggplot2)
+library(data.table)
+
+# data are from https://archive.ics.uci.edu/ml/datasets/Facebook+metrics#, and saved in github as the url below shows:
+url <- "https://raw.githubusercontent.com/ann2014/Assignments/6f46098cfc79ba78e4a58ed49d5f0df6f7c0a698/FacebookMetrics.csv"
+data <-getURL(url)
+df <- read.csv(text=data,header=T,sep=",", stringsAsFactors=FALSE)
+str(df)
+```
+2. Data wrangling: Please perform some basic transformations. They will need to make sense but could include column renaming, creating a subset of the data, replacing values, or creating new columns with derived data (for example - if it makes sense you could sum two columns together)
+```{r}
+# Subsetting
+df <- df[, c(1, 2, 5, 7, 19)]
+head(df, 1)
+# rename columns
+df2 <- setnames(df, old = c('Page.total.likes','Total.Interactions'), new = c('likes','interactions'))
+# replace values
+df2$Paid <- ifelse(is.na(df2$Paid), 'UNKNOWN', ifelse(df2$Paid == 0, 'NotPaid', ifelse(df2$Paid == 1, 'Paid', 'NA')))
+# creating a new column by Concatenating 2 existing columns
+df2$account.type <- paste0(df2$Type, ' ', df2$Paid)
+# substitute values
+df2$Post.Weekday <- ifelse(df2$Post.Weekday == 1, 'Monday', ifelse(df2$Post.Weekday == 2, 'Tuesday',
+                    ifelse(df2$Post.Weekday == 3, 'Wednesday', ifelse(df2$Post.Weekday == 4, 'Thursday',
+                    ifelse(df2$Post.Weekday == 5, 'Friday', ifelse(df2$Post.Weekday == 6, 'Saturday',
+                    ifelse(df2$Post.Weekday == 7, 'Sunday', 'NA')))))))
+# order values
+df2$Post.Weekday <- factor(df2$Post.Weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+summary(df2)
+```
+3. Graphics: Please make sure to display at least one scatter plot, box plot and histogram. Don't be limited to this. Please explore the many other options in R packages such as ggplot2.
+```{r}
+# check on the shapes of the data
+hist(df2$likes)
+hist(df2$interactions)
+
+table(df2$account.type, df2$Post.Weekday)
+table(df2$Paid)
+table(df2$Type)
+
+# Scatterplot
+# There is a negative relationship between likes and interactions for Type of Status and Video
+ggplot(df2, aes(likes, interactions, color = Type)) + geom_point()+ stat_smooth(method=lm, se=FALSE, fullrange=TRUE)
+# For paid services, likes and interactions have a slightly positive relationship.
+ggplot(df2, aes(likes, interactions, color = Paid)) + geom_point()+ stat_smooth(method=lm, se=FALSE, fullrange=TRUE)
+# identify outliers
+ggplot(df2, aes(likes, interactions, color = account.type)) + geom_point()+ stat_smooth(method=lm, se=FALSE, fullrange=TRUE)
+# boxplot
+ggplot(df2, aes(Post.Weekday, interactions)) + geom_boxplot()
+ggplot(df2, aes(Post.Weekday, likes)) + geom_boxplot()
+
+
+```
+
+4. Meaningful question for analysis: Please state at the beginning a meaningful question for analysis. Use the first three steps and anything else that would be helpful to answer the question you are posing from the data set you chose. Please write a brief conclusion paragraph in R markdown at the end.
+```{r}
+# type and likes relationship
+ds <- plyr::ddply(df2, "Type", plyr::summarise, mean = mean(likes), sd = sd(likes))
+ggplot(df2, aes(Type, likes)) + geom_point(colour = "pink", size = 2, show.legend = TRUE) + geom_point(data = ds, aes(y = mean),
+             colour = 'red', size = 3)
+
+# type and interactions relationship
+ds <- plyr::ddply(df2, "Type", plyr::summarise, mean = mean(interactions), sd = sd(interactions))
+
+ggplot(df2, aes(Type, interactions)) + geom_point(colour = "pink", size = 2, show.legend = TRUE) + geom_point(data = ds, aes(y = mean),
+             colour = 'red', size = 3)
+
+
+```
+
+Conclusion:
+ 1. Video type account is associated with the highest mean of likes, and Status the second followed by Photo and Link.
+ 2. Video type account is also associated with the highest mean of interactions, Status and Photo are closed to each other, the Link is associated with the lowest of mean of interatcions.
+ 3. Video type account strongly indicates a negative relationship between likes and interactions.Link type shows flat. 
+ 4. Paid Video account has the strongest negative correlation betweeen interactions and likes, followed by Video notPaid and Status Paid. 
+ 5. Wednesday shows the highest mean of interactions in boxplot, and show the lowest mean of likes. Sunday has the highest likes. 
+ 
+ 
+ 
+5. BONUS - place the original .csv in a github file and have R read from the link. This will be a very
+useful skill as you progress in your data science education and career.
+
+https://raw.githubusercontent.com/ann2014/Assignments/6f46098cfc79ba78e4a58ed49d5f0df6f7c0a698/FacebookMetrics.csv
